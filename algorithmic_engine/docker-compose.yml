@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount a volume to persist the SQLite database file.
+      # The source path './data/db' will be created on the host if it doesn't exist.
+      # The target path '/app_engine' should match WORKDIR where sql_app.db is expected.
+      # This ensures that sql_app.db inside the container is persisted.
+      - sqlite_data:/app_engine
+      # If you want live code reloading during development (not for production images):
+      # - .:/app_engine
+    environment:
+      # Override or set environment variables here if needed
+      # For example, to ensure the DATABASE_URL uses the path inside the container's WORKDIR
+      - DATABASE_URL=${DATABASE_URL:-sqlite:///./sql_app.db} # Use host .env or default
+    # env_file: # Alternative way to load .env variables
+    #   - .env
+    # depends_on: # If we had a separate DB service like Postgres
+    #   - db_service_name
+
+volumes:
+  sqlite_data: # Defines a named volume for persisting SQLite data
+
+# Networks could be defined here if multiple services need to communicate by name
+# networks:
+#   app_network:
+#     driver: bridge
