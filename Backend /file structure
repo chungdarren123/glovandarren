@@ -1,0 +1,13 @@
+esg_backend/
+├── .env
+├── requirements.txt
+├── app.py
+├── database.py
+├── models.py
+├── services/
+│   ├── carbon_interface.py
+│   ├── sustainalytics.py
+│   ├── msci.py
+│   ├── economic.py
+│   └── scoring.py
+└── init_db.py
