@@ -1,0 +1,20 @@
+-- Products table
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    barcode VARCHAR(50),
+    manufacturer VARCHAR(255),
+    created_at TIMESTAMP DEFAULT NOW()
+);
+
+-- ESG Scores table
+CREATE TABLE esg_scores (
+    id SERIAL PRIMARY KEY,
+    product_id INTEGER REFERENCES products(id),
+    environmental_score FLOAT,
+    social_score FLOAT,
+    governance_score FLOAT,
+    economic_score FLOAT,
+    overall_score FLOAT,
+    calculated_at TIMESTAMP DEFAULT NOW()
+);
