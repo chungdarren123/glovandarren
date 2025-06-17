@@ -1,0 +1,166 @@
+1. Set Up the Project Structure
+First, create all the necessary files with the exact names and folder structure shown earlier. Your project should look like this:
+
+text
+amazon-nutrition-extension/
+├── manifest.json
+├── background.js
+├── content.js
+├── popup/
+│   ├── popup.html
+│   ├── popup.css
+│   └── popup.js
+├── options/
+│   ├── options.html
+│   ├── options.css
+│   └── options.js
+└── icons/
+    ├── icon48.png
+    └── icon128.png
+2. Load the Extension in Chrome/Edge
+Open your browser and go to:
+
+Chrome: chrome://extensions
+
+Edge: edge://extensions
+
+Enable "Developer mode" (toggle in top right)
+
+Click "Load unpacked" and select your amazon-nutrition-extension folder
+
+3. Test the Basic Functionality
+Open Amazon.com and navigate to a food product page
+
+Click on a product link - you should see:
+
+The extension intercepts the click
+
+A popup appears with nutrition information
+
+Healthier alternatives are shown
+
+4. Development Workflow
+While developing:
+Make changes to your files
+
+In chrome://extensions:
+
+Click the refresh icon on your extension card
+
+Or press Ctrl+R when focused on the extensions page
+
+Debugging tips:
+Content Script Debugging:
+
+Right-click on Amazon page → "Inspect"
+
+Go to Console tab to see content script logs
+
+Background Script Debugging:
+
+In chrome://extensions, click "service worker" link under your extension
+
+This opens the background script console
+
+Popup Debugging:
+
+Click the extension icon in toolbar
+
+Right-click in the popup → "Inspect"
+
+5. Complete Implementation Checklist
+Add the fuzzy matching algorithm:
+
+Copy the fuzzy matching code into background.js
+
+Add the helper functions (levenshtein, jaro-winkler, etc.)
+
+Implement the popup UI:
+
+Complete popup/popup.html with your desired layout
+
+Add styles in popup/popup.css
+
+Connect the UI logic in popup/popup.js
+
+Add error handling:
+
+Handle cases where no matches are found
+
+Handle API rate limits or failures
+
+Add options page (optional):
+
+Let users configure score weights
+
+Set minimum match thresholds
+
+6. Testing Strategy
+Manual Testing:
+Test different Amazon product types:
+
+Packaged foods
+
+Fresh produce
+
+International products
+
+Test edge cases:
+
+Products with no matches
+
+Very long product names
+
+Products with special characters
+
+Automated Testing (optional):
+Set up Jest testing framework:
+
+bash
+npm init -y
+npm install jest @types/jest --save-dev
+Create __tests__ folder with test files
+
+Test your fuzzy matching functions:
+
+javascript
+// __tests__/matching.test.js
+const { fuzzyMatchScore } = require('../background.js');
+
+test('matches similar product names', () => {
+  expect(fuzzyMatchScore("Heinz Ketchup", "Heinz Tomato Ketchup"))
+    .toBeGreaterThan(0.7);
+});
+7. Packaging for Distribution
+When ready to share:
+
+Zip your extension folder
+
+For Chrome:
+
+Go to Chrome Web Developer Dashboard
+
+Upload zip file
+
+For Firefox:
+
+Submit to Addons.mozilla.org
+
+8. Troubleshooting Common Issues
+Problem: Extension not loading on Amazon
+
+Solution: Check matches in manifest.json includes correct Amazon domains
+
+Problem: API calls failing
+
+Solution: Verify CORS headers from Open Food Facts API
+
+Problem: Popup not showing data
+
+Solution: Check message passing between background/popup scripts
+
+Problem: Fuzzy matches are poor
+
+Solution: Adjust the weights in fuzzyMatchScore function
+
+Would you like me to provide more details on any specific part of the setup or running process?
