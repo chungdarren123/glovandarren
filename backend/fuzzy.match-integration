@@ -1,0 +1,70 @@
+function findMostSimilar(amazonProductName, openFoodProducts) {
+  let bestMatch = null;
+  let bestScore = -1;
+  
+  for (const product of openFoodProducts) {
+    const productName = product.product_name || '';
+    const score = fuzzyMatchScore(amazonProductName, productName);
+    
+    if (score > bestScore) {
+      bestScore = score;
+      bestMatch = product;
+    }
+  }
+  
+  // Only return matches above a certain threshold
+  return bestScore > 0.6 ? bestMatch : null;
+}
+
+// Enhanced product search with fuzzy matching
+async function searchWithFuzzyMatching(amazonProductName) {
+  const similarProducts = await searchOpenFoodFacts(amazonProductName);
+  
+  // First try exact matching
+  let bestMatch = findMostSimilar(amazonProductName, similarProducts);
+  
+  // If no good match, try breaking down the product name
+  if (!bestMatch) {
+    // Try matching with brand removed
+    const nameWithoutBrand = removeBrand(amazonProductName);
+    if (nameWithoutBrand !== amazonProductName) {
+      bestMatch = findMostSimilar(nameWithoutBrand, similarProducts);
+    }
+    
+    // Try matching with size/weight removed
+    if (!bestMatch) {
+      const nameWithoutSize = removeSizeInfo(amazonProductName);
+      bestMatch = findMostSimilar(nameWithoutSize, similarProducts);
+    }
+  }
+  
+  return bestMatch;
+}
+
+// Helper functions to clean product names
+function removeBrand(productName) {
+  // Simple implementation - remove first word if it looks like a brand
+  const words = productName.split(/\s+/);
+  if (words.length > 1 && isLikelyBrand(words[0])) {
+    return words.slice(1).join(' ');
+  }
+  return productName;
+}
+
+function removeSizeInfo(productName) {
+  // Remove size/weight information like "500g", "16oz", etc.
+  return productName.replace(/\b\d+\s*(g|kg|oz|lbs?|ml|l)\b/i, '').trim();
+}
+
+function isLikelyBrand(word) {
+  // Simple check for brand-like words
+  return word === word.toUpperCase() || 
+         word.endsWith('\'s') || 
+         brandDictionary.has(word.toLowerCase());
+}
+
+// You would pre-populate this with common brands
+const brandDictionary = new Set([
+  'nestle', 'kraft', 'heinz', 'kellogg\'s', 'general mills',
+  'unilever', 'pepsico', 'coca-cola', 'danone', 'campbell\'s'
+]);

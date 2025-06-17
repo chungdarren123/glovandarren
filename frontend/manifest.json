@@ -1,0 +1,33 @@
+{
+  "manifest_version": 3,
+  "name": "Amazon Nutrition Helper",
+  "version": "1.0",
+  "description": "Find healthier alternatives to Amazon products",
+  "icons": {
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  },
+  "permissions": [
+    "activeTab",
+    "storage",
+    "webRequest"
+  ],
+  "host_permissions": [
+    "*://*.amazon.com/*",
+    "*://world.openfoodfacts.org/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.amazon.com/*"],
+      "js": ["content.js"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": "icons/icon48.png"
+  },
+  "options_page": "options/options.html"
+}
