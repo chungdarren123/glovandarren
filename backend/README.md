@@ -4,15 +4,16 @@
 2. Create an instance of the class
 3. Use the function analyze_product(product_name) to generate the scores
 
-## Properties of result
+# Properties of result
 
 - result.score: Sustainability Score
 - result.confidence: Confidence level of estimate
 - result.breakdown: Dictionary of component-score pairs, for components of Eco, Carbon, Packaging, Certifications and Nutrition
 - result.missing_data: Missing data of product components in API
 
-**Example usage**
-from world-food-facts-api.py import SustainabilityScorer
+# Example usage
 
-scorer = SustainabilityScorer()
+from world-food-facts-api.py import SustainabilityScorer\n
+
+scorer = SustainabilityScorer()\n
 result = scorer.analyze_product("Heineken Beer")
