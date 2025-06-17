@@ -23,12 +23,13 @@
   "content_scripts": [
     {
       "matches": ["https://www.amazon.sg/*"],
-      "js": ["classes.js","frontend_utils.js","content.js"]
+      "js": ["popupGenerator.js","classes.js","frontend_utils.js","content.js"],
+      "css": ["popup.css"]
     }
   ],
   "web_accessible_resources": [
       {
-          "resources": ["icons/icon16.png"],
+          "resources": ["icons/favicon_leaf.png"],
           "matches": ["<all_urls>"]
       }
   ]
