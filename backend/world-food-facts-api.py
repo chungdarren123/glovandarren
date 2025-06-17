@@ -401,14 +401,13 @@ class SustainabilityScorer:
         
         return result
 
-
 def main():
     """Example usage of the improved sustainability scorer"""
     scorer = SustainabilityScorer()
     
     # Example analysis
-    product_name = "heineken"
-    category = "alcohol"
+    product_name = "Heineken Beer"
+    category = "Alcohol"
     
     result = scorer.analyze_product(product_name, category)
     
