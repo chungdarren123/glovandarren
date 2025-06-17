@@ -23,8 +23,8 @@
   "content_scripts": [
     {
       "matches": ["https://www.amazon.sg/*"],
-      "js": ["popupGenerator.js","classes.js","frontend_utils.js","content.js"],
-      "css": ["popup.css"]
+      "js": ["modalPopup.js","classes.js","frontend_utils.js","content.js"],
+      "css": ["modalPopup.css"]
     }
   ],
   "web_accessible_resources": [

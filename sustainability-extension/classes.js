@@ -34,22 +34,29 @@ class ProductObj {
         return [this.name,this.price]
     }
     async getAnalysis(){
-
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                resolve("Hello after 2 seconds");
+            }, 2000);
+        });
     }
     async updateIcon(){
+        if (!this.analysis) {this.analysis = await this.getAnalysis()}
+        const nameElement = document.querySelector(".analysis-name");
+        const priceElement = document.querySelector(".analysis-price");
+        const analysisElement = document.querySelector(".analysis-analysis");
+        nameElement.innerHTML = `Name: ${this.name}`;
+        priceElement.innerHTML = `Price: ${this.price}`;
+        analysisElement.innerHTML = `Analysis: ${this.analysis}`;
+
+        const placeholderSustainabilityScore = 70;
+        animateProgressBar(placeholderSustainabilityScore);
     }
-    showPopup(){
-         event.stopPropagation();
+    async showPopup(){
+        event.stopPropagation();
         event.preventDefault();
-        const testHTML = `
-          <div class="product-popup">
-            <h3>Product Info</h3>
-            <p>Name: ${this.name}, price: ${this.price}, etc.</p>
-            <p>Analysis: ${this.analysis} </p>
-            <button>Buy Now</button>
-          </div>
-        `;
-        showModalPopup(testHTML);
+        showModalPopup(analyticsHtml);
+        this.updateIcon();
     }
 }
 class SiteObj {
