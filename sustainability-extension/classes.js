@@ -35,22 +35,36 @@ class ProductObj {
     }
     async getAnalysis(){
         return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve("Hello after 2 seconds");
+            this.analysis = {
+                    sustainabilityScore: 70,
+                    ecoScore: 20,
+                    carbonScore: 20,
+                    packagingScore: 20,
+                    certificationScore: 20,
+                    nutritionScore: 20,
+                }
+            setTimeout(() => { //test async function to mimic "loading", remove when not needed
+                resolve(this.analysis);
             }, 2000);
         });
     }
     async updateIcon(){
-        if (!this.analysis) {this.analysis = await this.getAnalysis()}
+        if (!this.analysis) {await this.getAnalysis()}
         const nameElement = document.querySelector(".analysis-name");
-        const priceElement = document.querySelector(".analysis-price");
-        const analysisElement = document.querySelector(".analysis-analysis");
+        const ecoElement = document.querySelector(".analysis-eco");
+        const carbonElement = document.querySelector(".analysis-carbon");
+        const packagingElement = document.querySelector(".analysis-packaging");
+        const certificationElement = document.querySelector(".analysis-certification");
+        const nutritionElement = document.querySelector(".analysis-nutrition");
         nameElement.innerHTML = `Name: ${this.name}`;
-        priceElement.innerHTML = `Price: ${this.price}`;
-        analysisElement.innerHTML = `Analysis: ${this.analysis}`;
+        ecoElement.innerHTML = `🌱 Eco: ${this.analysis.ecoScore}`;
+        carbonElement.innerHTML = `👣 Carbon: ${this.analysis.carbonScore}`;
+        packagingElement.innerHTML = `📦 Packaging: ${this.analysis.packagingScore}`;
+        certificationElement.innerHTML = `📃 Certification: ${this.analysis.certificationScore}`;
+        nutritionElement.innerHTML = `🍎 Nutrition: ${this.analysis.nutritionScore}`;
 
         const placeholderSustainabilityScore = 70;
-        animateProgressBar(placeholderSustainabilityScore);
+        animateProgressBar(this.analysis.sustainabilityScore);
     }
     async showPopup(){
         event.stopPropagation();
