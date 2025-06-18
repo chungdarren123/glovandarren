@@ -67,8 +67,11 @@ const analyticsHtml = `
     </div>
     <div class="analysis-details">
         <div class="analysis-name">Name: Loading...</div>
-        <div class="analysis-price">Price: Loading...</div>
-        <div class="analysis-analysis">Analysis: Loading...</div>
+        <div class="analysis-eco">🌱 Eco: Loading...</div>
+        <div class="analysis-carbon">👣 Carbon: Loading...</div>
+        <div class="analysis-packaging">📦 Packaging: Loading...</div>
+        <div class="analysis-certification">📃 Certification: Loading...</div>
+        <div class="analysis-nutrition">🍎 Nutrition: Loading...</div>
     </div>
 </div>
 
