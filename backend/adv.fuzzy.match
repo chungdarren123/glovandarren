@@ -1,0 +1,126 @@
+function fuzzyMatchScore(str1, str2) {
+  // Normalize strings
+  const normalize = (str) => str.toLowerCase()
+    .replace(/[^\w\s]/g, '')  // Remove punctuation
+    .replace(/\s+/g, ' ')     // Collapse whitespace
+    .trim();
+  
+  const s1 = normalize(str1);
+  const s2 = normalize(str2);
+  
+  // If either string is empty after normalization, return 0
+  if (!s1 || !s2) return 0;
+  
+  // Exact match
+  if (s1 === s2) return 1;
+  
+  // Calculate different similarity metrics
+  const levenshteinSim = 1 - (levenshteinDistance(s1, s2) / Math.max(s1.length, s2.length));
+  const jaroWinklerSim = jaroWinkler(s1, s2);
+  const commonWordsSim = commonWordsSimilarity(s1, s2);
+  const prefixSim = prefixSimilarity(s1, s2);
+  
+  // Weighted combination of metrics
+  const weights = {
+    levenshtein: 0.4,
+    jaroWinkler: 0.3,
+    commonWords: 0.2,
+    prefix: 0.1
+  };
+  
+  return (
+    (levenshteinSim * weights.levenshtein) +
+    (jaroWinklerSim * weights.jaroWinkler) +
+    (commonWordsSim * weights.commonWords) +
+    (prefixSim * weights.prefix)
+  );
+}
+
+// Jaro-Winkler similarity implementation
+function jaroWinkler(s1, s2) {
+  // Jaro distance
+  let m = 0;
+  const s1Len = s1.length;
+  const s2Len = s2.length;
+  
+  if (s1Len === 0 || s2Len === 0) return 0;
+  
+  const matchDistance = Math.floor(Math.max(s1Len, s2Len) / 2) - 1;
+  const s1Matches = new Array(s1Len);
+  const s2Matches = new Array(s2Len);
+  
+  for (let i = 0; i < s1Len; i++) {
+    const start = Math.max(0, i - matchDistance);
+    const end = Math.min(i + matchDistance + 1, s2Len);
+    
+    for (let j = start; j < end; j++) {
+      if (!s2Matches[j] && s1[i] === s2[j]) {
+        s1Matches[i] = true;
+        s2Matches[j] = true;
+        m++;
+        break;
+      }
+    }
+  }
+  
+  if (m === 0) return 0;
+  
+  let k = 0;
+  let transpositions = 0;
+  
+  for (let i = 0; i < s1Len; i++) {
+    if (s1Matches[i]) {
+      while (!s2Matches[k]) k++;
+      if (s1[i] !== s2[k]) transpositions++;
+      k++;
+    }
+  }
+  
+  const jaro = (
+    (m / s1Len) +
+    (m / s2Len) +
+    ((m - transpositions / 2) / m)
+  ) / 3;
+  
+  // Winkler modification - give more weight to common prefix
+  const prefixLengthLimit = 4;
+  let commonPrefix = 0;
+  
+  while (commonPrefix < prefixLengthLimit && 
+         s1[commonPrefix] === s2[commonPrefix]) {
+    commonPrefix++;
+  }
+  
+  return jaro + (commonPrefix * 0.1 * (1 - jaro));
+}
+
+// Common words similarity
+function commonWordsSimilarity(s1, s2) {
+  const words1 = s1.split(/\s+/);
+  const words2 = s2.split(/\s+/);
+  
+  const set1 = new Set(words1);
+  const set2 = new Set(words2);
+  
+  const intersection = new Set([...set1].filter(x => set2.has(x)));
+  const union = new Set([...set1, ...set2]);
+  
+  return union.size > 0 ? intersection.size / union.size : 0;
+}
+
+// Prefix similarity (first 3 words)
+function prefixSimilarity(s1, s2) {
+  const words1 = s1.split(/\s+/).slice(0, 3);
+  const words2 = s2.split(/\s+/).slice(0, 3);
+  
+  if (words1.length === 0 || words2.length === 0) return 0;
+  
+  let matches = 0;
+  const minLength = Math.min(words1.length, words2.length);
+  
+  for (let i = 0; i < minLength; i++) {
+    if (words1[i] === words2[i]) matches++;
+  }
+  
+  return matches / minLength;
+}

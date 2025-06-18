@@ -1,0 +1,15 @@
+amazon-nutrition-extension/
+├── manifest.json
+├── background.js
+├── content.js
+├── popup/
+│   ├── popup.html
+│   ├── popup.css
+│   └── popup.js
+├── options/
+│   ├── options.html
+│   ├── options.css
+│   └── options.js
+└── icons/
+    ├── icon48.png
+    └── icon128.png
