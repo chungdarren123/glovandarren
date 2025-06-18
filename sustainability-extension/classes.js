@@ -13,7 +13,6 @@
 /**
  * Extension to calculate sustainability score by product name
  */
-import SustainabilityScorer from "../backend/world-food-facts-api.py"
 
 class ProductObj {
     constructor() {
@@ -43,17 +42,27 @@ class ProductObj {
      * Generate scores hashtable from SustainabilityScorer
      */
     async analyzeSustainability() {
+    try {
         const response = await fetch("http://localhost:5000/score", {
             method: 'POST',
             headers: { 'Content-Type' : 'application/json' },
             body: JSON.stringify({ product_name: this.name })
         });
-        return await response.json();
+        if (!response.ok) {
+            throw new Error(`Server error: ${response.status}`);
+        }
+        const data = await response.json();
+        console.log(data);
+        return data;
+    } catch (err) {
+        console.error("Fetch error:", err);
     }
+}
 
     async getAnalysis(){
-        const results = await this.analyzeSustainability();
-        return results;
+        this.analysis = await this.analyzeSustainability();
+
+        return this.analysis;
     }
     async updateIcon(){
         if (!this.analysis) {await this.getAnalysis()}
@@ -63,15 +72,25 @@ class ProductObj {
         const packagingElement = document.querySelector(".analysis-packaging");
         const certificationElement = document.querySelector(".analysis-certification");
         const nutritionElement = document.querySelector(".analysis-nutrition");
-        nameElement.innerHTML = `Name: ${this.name}`;
-        ecoElement.innerHTML = `🌱 Eco: ${this.analysis.ecoScore}`;
-        carbonElement.innerHTML = `👣 Carbon: ${this.analysis.carbonScore}`;
-        packagingElement.innerHTML = `📦 Packaging: ${this.analysis.packagingScore}`;
-        certificationElement.innerHTML = `📃 Certification: ${this.analysis.certificationScore}`;
-        nutritionElement.innerHTML = `🍎 Nutrition: ${this.analysis.nutritionScore}`;
+        const progressElement = document.querySelector(".progress-value");
+        if (this.analysis.noData!="1") {
+            nameElement.innerHTML = `Name: ${this.name}`;
+            ecoElement.innerHTML = `🌱 Eco: ${this.analysis.ecoScore}`;
+            carbonElement.innerHTML = `👣 Carbon: ${this.analysis.carbonScore}`;
+            packagingElement.innerHTML = `📦 Packaging: ${this.analysis.packagingScore}`;
+            certificationElement.innerHTML = `📃 Certification: ${this.analysis.certificationScore}`;
+            nutritionElement.innerHTML = `🍎 Nutrition: ${this.analysis.nutritionScore}`;
 
-        const placeholderSustainabilityScore = 70;
-        animateProgressBar(this.analysis.sustainabilityScore);
+            animateProgressBar(this.analysis.sustainabilityScore);
+        } else {
+            nameElement.innerHTML = `Name: ${this.name}`;
+            ecoElement.innerHTML = `🌱 Eco: No Data`;
+            carbonElement.innerHTML = `👣 Carbon: No Data`;
+            packagingElement.innerHTML = `📦 Packaging: No Data`;
+            certificationElement.innerHTML = `📃 Certification: No Data`;
+            nutritionElement.innerHTML = `🍎 Nutrition: No Data`;
+            progressElement.innerHTML = `No Data`;
+        }
     }
     async showPopup(){
         event.stopPropagation();

@@ -24,11 +24,11 @@ function addIconsToSite(siteObject) {
     if (!products) return;
     products.forEach((product) => {
         // Get Product Information
-        console.log(product.getInfo());
+        // console.log(product.getInfo());
 
         // Run Analysis of Product
         // analysis(productInfo)
-        productMetrics="sustainability metrics go here"
+        // productMetrics="sustainability metrics go here"
 
         // Generate & Attach Icon Based on Analysis of product
         //icon = siteObject.attachIcon(product, productMetrics);
