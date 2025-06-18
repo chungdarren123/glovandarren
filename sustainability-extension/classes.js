@@ -10,6 +10,11 @@
         - .getProducts() -> [product:ProductObj,...]
 */
 
+/**
+ * Extension to calculate sustainability score by product name
+ */
+import SustainabilityScorer from "../backend/world-food-facts-api.py"
+
 class ProductObj {
     constructor() {
         //this.imgElement = imgElement;
@@ -33,12 +38,22 @@ class ProductObj {
     getInfo(){
         return [this.name,this.price]
     }
-    async getAnalysis(){
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                resolve("Hello after 2 seconds");
-            }, 2000);
+
+    /**
+     * Generate scores hashtable from SustainabilityScorer
+     */
+    async analyzeSustainability() {
+        const response = await fetch("http://localhost:5000/score", {
+            method: 'POST',
+            headers: { 'Content-Type' : 'application/json' },
+            body: JSON.stringify({ product_name: this.name })
         });
+        return await response.json();
+    }
+
+    async getAnalysis(){
+        const results = await this.analyzeSustainability();
+        return results;
     }
     async updateIcon(){
         if (!this.analysis) {this.analysis = await this.getAnalysis()}

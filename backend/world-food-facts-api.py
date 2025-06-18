@@ -1,7 +1,8 @@
-import requests
-import time
+from flask import Flask, jsonify, request
 from typing import Dict, List, Optional, Union
 from dataclasses import dataclass
+import requests
+import time
 import logging
 
 # Configure logging
@@ -366,7 +367,7 @@ class SustainabilityScorer:
             missing_data=missing_data
         )
     
-    def analyze_product(self, product_name: str, category: str) -> Optional[SustainabilityScore]:
+    async def analyze_product(self, product_name: str, category: str) -> Optional[SustainabilityScore]:
         """
         Complete analysis pipeline for a product
         
@@ -400,7 +401,23 @@ class SustainabilityScorer:
             logger.warning(f"Missing data for: {', '.join(result.missing_data)}")
         
         return result
+    
+"""
+API to connect SustainabilityScorer backend to chrome browser extension frontend
+"""
+app = Flask(__name__)
 
+@app.route('/score', methods=['POST'])
+def score_product():
+    data = request.json
+    scorer = SustainabilityScorer()
+    result = scorer.calculate(data['product_name'])
+    return jsonify(result)
+
+if __name__ == '__main__':
+    app.run(port=5000)
+
+'''
 def main():
     """Example usage of the improved sustainability scorer"""
     scorer = SustainabilityScorer()
@@ -440,3 +457,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+'''
