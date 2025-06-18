@@ -1,0 +1,18 @@
+{
+  "manifest_version": 3,
+  "name": "ESG Score Checker",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "icon.png"
+  },
+  "permissions": ["activeTab", "storage"],
+  "content_scripts": [{
+    "matches": ["<all_urls>"],
+    "js": ["content-script.js"]
+  }],
+  "host_permissions": [
+    "http://localhost:8000/*",  // Your Python backend
+    "https://your-production-api.com/*"
+  ]
+}
